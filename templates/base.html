@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Desk{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-inner">
+            <a href="{{ url_for('dashboard') }}" class="brand">
+                <div class="brand-icon">LBS</div>
+                <span class="brand-title">Library Desk</span>
+            </a>
+
+            <nav class="nav-menu">
+                <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">Overview</a>
+                <a href="{{ url_for('books') }}" class="{% if request.endpoint == 'books' %}active{% endif %}">Books</a>
+                <a href="{{ url_for('students') }}" class="{% if request.endpoint == 'students' %}active{% endif %}">Students</a>
+                <a href="{{ url_for('issue') }}" class="{% if request.endpoint == 'issue' %}active{% endif %}">Circulation</a>
+            </nav>
+
+            <div class="nav-right">
+                <span class="user-chip">{{ session.get('username', 'admin') }}</span>
+                <a href="{{ url_for('logout') }}" class="signout-btn">Sign Out</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <div class="page-header">
+            <div>
+                <h1>{% block page_title %}Overview{% endblock %}</h1>
+                <p class="page-subtitle">{% block page_subtitle %}Library inventory and circulation console{% endblock %}</p>
+            </div>
+            <div>{% block header_action %}{% endblock %}</div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

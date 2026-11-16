@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Overview | Library Desk{% endblock %}
+{% block page_title %}Library Overview{% endblock %}
+{% block page_subtitle %}Live inventory count, student members, and active book loans{% endblock %}
+
+{% block header_action %}
+<a href="{{ url_for('issue') }}" class="btn btn-primary">+ Issue Book</a>
+{% endblock %}
+
+{% block content %}
+<div class="kpi-row">
+    <div class="kpi-box">
+        <div class="kpi-top">
+            <span class="kpi-title">Catalog Titles</span>
+            <span class="kpi-tag">Total</span>
+        </div>
+        <div class="kpi-num">{{ total_books }}</div>
+        <div class="kpi-desc">Unique books registered</div>
+    </div>
+
+    <div class="kpi-box">
+        <div class="kpi-top">
+            <span class="kpi-title">On Shelf</span>
+            <span class="kpi-tag">Ready</span>
+        </div>
+        <div class="kpi-num">{{ available_books }}</div>
+        <div class="kpi-desc">Copies available to issue</div>
+    </div>
+
+    <div class="kpi-box">
+        <div class="kpi-top">
+            <span class="kpi-title">Active Loans</span>
+            <span class="kpi-tag">Issued</span>
+        </div>
+        <div class="kpi-num">{{ issued_books }}</div>
+        <div class="kpi-desc">Currently with students</div>
+    </div>
+
+    <div class="kpi-box">
+        <div class="kpi-top">
+            <span class="kpi-title">Students</span>
+            <span class="kpi-tag">Members</span>
+        </div>
+        <div class="kpi-num">{{ total_students }}</div>
+        <div class="kpi-desc">Registered library accounts</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-head">
+        <h2>Quick Navigation</h2>
+    </div>
+    <div class="card-body">
+        <div class="action-grid">
+            <a href="{{ url_for('issue') }}" class="action-tile">
+                <strong>Issue & Return Desk</strong>
+                <span>Assign books, collect late fines, and view return history</span>
+            </a>
+            <a href="{{ url_for('books') }}" class="action-tile">
+                <strong>Manage Books Catalog</strong>
+                <span>Add new arrivals, search titles, or update stock</span>
+            </a>
+            <a href="{{ url_for('students') }}" class="action-tile">
+                <strong>Student Directory</strong>
+                <span>Register new students and view member records</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

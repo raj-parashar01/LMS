@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Books | Library Desk{% endblock %}
+{% block page_title %}Books Catalog{% endblock %}
+{% block page_subtitle %}Manage book inventory, authors, categories, and available copies{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-head">
+        <h2>Add Book to Catalog</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('books') }}" class="inline-form">
+            <div class="field">
+                <label>Title *</label>
+                <input type="text" name="title" required placeholder="e.g. Database System Concepts">
+            </div>
+            <div class="field">
+                <label>Author *</label>
+                <input type="text" name="author" required placeholder="e.g. Henry F. Korth">
+            </div>
+            <div class="field">
+                <label>Category</label>
+                <input type="text" name="category" placeholder="e.g. Computer Science">
+            </div>
+            <div class="field">
+                <label>Copies *</label>
+                <input type="number" name="quantity" min="0" value="1" required>
+            </div>
+            <div class="field">
+                <button type="submit" class="btn btn-primary">Save Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-head">
+        <h2>Inventory ({{ books|length }})</h2>
+        <form method="GET" action="{{ url_for('books') }}" class="search-group">
+            <input type="text" name="search" value="{{ search }}" placeholder="Filter by title or author...">
+            <button type="submit" class="btn btn-secondary">Search</button>
+            {% if search %}
+                <a href="{{ url_for('books') }}" class="btn btn-secondary">Clear</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Availability</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td class="mono">#{{ book.id }}</td>
+                    <td><strong>{{ book.title }}</strong></td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.category or 'General' }}</td>
+                    <td>
+                        {% if book.quantity > 0 %}
+                            <span class="pill pill-green">{{ book.quantity }} in stock</span>
+                        {% else %}
+                            <span class="pill pill-red">Out of stock</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_book', id=book.id) }}" onsubmit="return confirm('Remove this book permanently?');">
+                            <button type="submit" class="btn-xs-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 28px;">No books found matching your query.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}Circulation | Library Desk{% endblock %}
+{% block page_title %}Book Circulation{% endblock %}
+{% block page_subtitle %}14-day standard loan period with ₹5/day overdue fine calculation{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-head">
+        <h2>Issue a Book</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('issue') }}" class="inline-form">
+            <div class="field">
+                <label>Available Book *</label>
+                <select name="book_id" required>
+                    <option value="">Select book...</option>
+                    {% for book in books %}
+                        <option value="{{ book.id }}">{{ book.title }} ({{ book.quantity }} available)</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Student Member *</label>
+                <select name="student_id" required>
+                    <option value="">Select student...</option>
+                    {% for student in students %}
+                        <option value="{{ student.id }}">{{ student.name }}{% if student.class_name %} — {{ student.class_name }}{% endif %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <button type="submit" class="btn btn-primary">Issue Book</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-head">
+        <h2>Active Loans ({{ issued|length }})</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Book Title</th>
+                    <th>Student</th>
+                    <th>Issued On</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th>Fine</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in issued %}
+                <tr>
+                    <td class="mono">#{{ row.id }}</td>
+                    <td><strong>{{ row.title }}</strong></td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.issue_date }}</td>
+                    <td>{{ row.due_date }}</td>
+                    <td>
+                        {% if row.overdue_days > 0 %}
+                            <span class="pill pill-amber">Overdue {{ row.overdue_days }}d</span>
+                        {% else %}
+                            <span class="pill pill-green">On Loan</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.fine > 0 %}
+                            <strong style="color: #b91c1c;">₹{{ row.fine }}</strong>
+                        {% else %}
+                            <span style="color: #6b7280;">₹0</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('return_book', id=row.id) }}">
+                            <button type="submit" class="btn-xs-success">
+                                {% if row.fine > 0 %}Collect ₹{{ row.fine }} & Return{% else %}Mark Returned{% endif %}
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" style="text-align: center; color: #6b7280; padding: 28px;">No active book loans right now.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-head">
+        <h2>Recent Returns ({{ returned|length }})</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Book Title</th>
+                    <th>Student</th>
+                    <th>Issued On</th>
+                    <th>Due Date</th>
+                    <th>Returned On</th>
+                    <th>Fine Paid</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in returned %}
+                <tr>
+                    <td class="mono">#{{ row.id }}</td>
+                    <td>{{ row.title }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.issue_date }}</td>
+                    <td>{{ row.due_date }}</td>
+                    <td>{{ row.return_date }}</td>
+                    <td>
+                        {% if row.fine_paid > 0 %}
+                            <span class="pill pill-amber">₹{{ row.fine_paid }}</span>
+                        {% else %}
+                            <span class="pill pill-green">₹0</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" style="text-align: center; color: #6b7280; padding: 28px;">No returned book logs yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

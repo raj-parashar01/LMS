@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Students | Library Desk{% endblock %}
+{% block page_title %}Students Directory{% endblock %}
+{% block page_subtitle %}Register student members and manage contact details{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-head">
+        <h2>Register New Student</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('students') }}" class="inline-form">
+            <div class="field">
+                <label>Full Name *</label>
+                <input type="text" name="name" required placeholder="e.g. Rohan Deshmukh">
+            </div>
+            <div class="field">
+                <label>Class / Course</label>
+                <input type="text" name="class_name" placeholder="e.g. BCA Final Year">
+            </div>
+            <div class="field">
+                <label>Mobile</label>
+                <input type="text" name="mobile" placeholder="10-digit mobile number">
+            </div>
+            <div class="field">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="rohan@college.edu">
+            </div>
+            <div class="field">
+                <button type="submit" class="btn btn-primary">Add Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-head">
+        <h2>Registered Students ({{ students|length }})</h2>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td class="mono">#{{ student.id }}</td>
+                    <td><strong>{{ student.name }}</strong></td>
+                    <td>{{ student.class_name or '—' }}</td>
+                    <td>{{ student.mobile or '—' }}</td>
+                    <td>{{ student.email or '—' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_student', id=student.id) }}" onsubmit="return confirm('Delete this student profile?');">
+                            <button type="submit" class="btn-xs-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 28px;">No students registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
