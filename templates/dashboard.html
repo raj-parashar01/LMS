@@ -1,57 +1,58 @@
 {% extends "base.html" %}
-{% block title %}Overview | Library Desk{% endblock %}
+{% block title %}Library Management{% endblock %}
+{% block meta_description %}Library inventory, student membership, and circulation overview{% endblock %}
 {% block page_title %}Library Overview{% endblock %}
 {% block page_subtitle %}Live inventory count, student members, and active book loans{% endblock %}
 
 {% block header_action %}
-<a href="{{ url_for('issue') }}" class="btn btn-primary">+ Issue Book</a>
+<a href="{{ url_for('issue') }}" class="btn btn-primary">Issue a book</a>
 {% endblock %}
 
 {% block content %}
-<div class="kpi-row">
-    <div class="kpi-box">
+<section class="kpi-row" aria-label="Library statistics">
+    <article class="kpi-box" aria-labelledby="catalog-title">
         <div class="kpi-top">
-            <span class="kpi-title">Catalog Titles</span>
+            <h2 class="kpi-title" id="catalog-title">Catalog Titles</h2>
             <span class="kpi-tag">Total</span>
         </div>
-        <div class="kpi-num">{{ total_books }}</div>
-        <div class="kpi-desc">Unique books registered</div>
-    </div>
+        <p class="kpi-num">{{ total_books }}</p>
+        <p class="kpi-desc">Unique books registered</p>
+    </article>
 
-    <div class="kpi-box">
+    <article class="kpi-box" aria-labelledby="shelf-title">
         <div class="kpi-top">
-            <span class="kpi-title">On Shelf</span>
+            <h2 class="kpi-title" id="shelf-title">On Shelf</h2>
             <span class="kpi-tag">Ready</span>
         </div>
-        <div class="kpi-num">{{ available_books }}</div>
-        <div class="kpi-desc">Copies available to issue</div>
-    </div>
+        <p class="kpi-num">{{ available_books }}</p>
+        <p class="kpi-desc">Copies available to issue</p>
+    </article>
 
-    <div class="kpi-box">
+    <article class="kpi-box" aria-labelledby="loans-title">
         <div class="kpi-top">
-            <span class="kpi-title">Active Loans</span>
+            <h2 class="kpi-title" id="loans-title">Active Loans</h2>
             <span class="kpi-tag">Issued</span>
         </div>
-        <div class="kpi-num">{{ issued_books }}</div>
-        <div class="kpi-desc">Currently with students</div>
-    </div>
+        <p class="kpi-num">{{ issued_books }}</p>
+        <p class="kpi-desc">Currently with students</p>
+    </article>
 
-    <div class="kpi-box">
+    <article class="kpi-box" aria-labelledby="students-title">
         <div class="kpi-top">
-            <span class="kpi-title">Students</span>
+            <h2 class="kpi-title" id="students-title">Students</h2>
             <span class="kpi-tag">Members</span>
         </div>
-        <div class="kpi-num">{{ total_students }}</div>
-        <div class="kpi-desc">Registered library accounts</div>
-    </div>
-</div>
+        <p class="kpi-num">{{ total_students }}</p>
+        <p class="kpi-desc">Registered library accounts</p>
+    </article>
+</section>
 
-<div class="card">
-    <div class="card-head">
-        <h2>Quick Navigation</h2>
-    </div>
+<section class="card" aria-labelledby="quick-nav-title">
+    <header class="card-head">
+        <h2 id="quick-nav-title">Quick access</h2>
+    </header>
     <div class="card-body">
-        <div class="action-grid">
+        <nav class="action-grid" aria-label="Library tasks">
             <a href="{{ url_for('issue') }}" class="action-tile">
                 <strong>Issue & Return Desk</strong>
                 <span>Assign books, collect late fines, and view return history</span>
@@ -64,7 +65,7 @@
                 <strong>Student Directory</strong>
                 <span>Register new students and view member records</span>
             </a>
-        </div>
+        </nav>
     </div>
-</div>
+</section>
 {% endblock %}

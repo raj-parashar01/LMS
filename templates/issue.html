@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Circulation | Library Desk{% endblock %}
+{% block meta_description %}Issue library books, manage active loans, and review returns{% endblock %}
 {% block page_title %}Book Circulation{% endblock %}
 {% block page_subtitle %}14-day standard loan period with ₹5/day overdue fine calculation{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-head">
-        <h2>Issue a Book</h2>
-    </div>
+<section class="card" aria-labelledby="issue-book-title">
+    <header class="card-head">
+        <h2 id="issue-book-title">Issue a book</h2>
+    </header>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('issue') }}" class="inline-form">
+        <form method="POST" action="{{ url_for('issue') }}" class="inline-form" aria-label="Issue book to student">
             <div class="field">
-                <label>Available Book *</label>
-                <select name="book_id" required>
+                <label for="issue-book">Available book <span aria-hidden="true">*</span></label>
+                <select id="issue-book" name="book_id" required>
                     <option value="">Select book...</option>
                     {% for book in books %}
                         <option value="{{ book.id }}">{{ book.title }} ({{ book.quantity }} available)</option>
@@ -21,8 +22,8 @@
             </div>
 
             <div class="field">
-                <label>Student Member *</label>
-                <select name="student_id" required>
+                <label for="issue-student">Student member <span aria-hidden="true">*</span></label>
+                <select id="issue-student" name="student_id" required>
                     <option value="">Select student...</option>
                     {% for student in students %}
                         <option value="{{ student.id }}">{{ student.name }}{% if student.class_name %} — {{ student.class_name }}{% endif %}</option>
@@ -35,25 +36,26 @@
             </div>
         </form>
     </div>
-</div>
+</section>
 
-<div class="card">
-    <div class="card-head">
-        <h2>Active Loans ({{ issued|length }})</h2>
-    </div>
+<section class="card" aria-labelledby="active-loans-title">
+    <header class="card-head">
+        <h2 id="active-loans-title">Active loans <span class="count-label">{{ issued|length }}</span></h2>
+    </header>
 
     <div class="table-wrap">
         <table>
+            <caption class="sr-only">Currently issued books and return actions</caption>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Book Title</th>
-                    <th>Student</th>
-                    <th>Issued On</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Fine</th>
-                    <th>Action</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Book title</th>
+                    <th scope="col">Student</th>
+                    <th scope="col">Issued on</th>
+                    <th scope="col">Due date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Fine</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,14 +75,14 @@
                     </td>
                     <td>
                         {% if row.fine > 0 %}
-                            <strong style="color: #b91c1c;">₹{{ row.fine }}</strong>
+                            <strong class="fine-amount">₹{{ row.fine }}</strong>
                         {% else %}
-                            <span style="color: #6b7280;">₹0</span>
+                            <span class="muted-amount">₹0</span>
                         {% endif %}
                     </td>
                     <td>
                         <form method="POST" action="{{ url_for('return_book', id=row.id) }}">
-                            <button type="submit" class="btn-xs-success">
+                            <button type="submit" class="btn-xs-success" aria-label="{% if row.fine > 0 %}Collect fine and return {{ row.title }}{% else %}Mark {{ row.title }} returned{% endif %}">
                                 {% if row.fine > 0 %}Collect ₹{{ row.fine }} & Return{% else %}Mark Returned{% endif %}
                             </button>
                         </form>
@@ -88,30 +90,31 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="8" style="text-align: center; color: #6b7280; padding: 28px;">No active book loans right now.</td>
+                    <td colspan="8" class="empty-state">No active book loans right now.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 
-<div class="card">
-    <div class="card-head">
-        <h2>Recent Returns ({{ returned|length }})</h2>
-    </div>
+<section class="card" aria-labelledby="recent-returns-title">
+    <header class="card-head">
+        <h2 id="recent-returns-title">Recent returns <span class="count-label">{{ returned|length }}</span></h2>
+    </header>
 
     <div class="table-wrap">
         <table>
+            <caption class="sr-only">Most recent returned books and any fines paid</caption>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Book Title</th>
-                    <th>Student</th>
-                    <th>Issued On</th>
-                    <th>Due Date</th>
-                    <th>Returned On</th>
-                    <th>Fine Paid</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Book title</th>
+                    <th scope="col">Student</th>
+                    <th scope="col">Issued on</th>
+                    <th scope="col">Due date</th>
+                    <th scope="col">Returned on</th>
+                    <th scope="col">Fine paid</th>
                 </tr>
             </thead>
             <tbody>
@@ -133,11 +136,11 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="7" style="text-align: center; color: #6b7280; padding: 28px;">No returned book logs yet.</td>
+                    <td colspan="7" class="empty-state">No returned book logs yet.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

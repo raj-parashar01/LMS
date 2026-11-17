@@ -1,60 +1,63 @@
 {% extends "base.html" %}
 {% block title %}Books | Library Desk{% endblock %}
+{% block meta_description %}Manage the library catalog, search books, and track available copies{% endblock %}
 {% block page_title %}Books Catalog{% endblock %}
 {% block page_subtitle %}Manage book inventory, authors, categories, and available copies{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-head">
-        <h2>Add Book to Catalog</h2>
-    </div>
+<section class="card" aria-labelledby="add-book-title">
+    <header class="card-head">
+        <h2 id="add-book-title">Add a book</h2>
+    </header>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('books') }}" class="inline-form">
+        <form method="POST" action="{{ url_for('books') }}" class="inline-form" aria-label="Add book to catalog">
             <div class="field">
-                <label>Title *</label>
-                <input type="text" name="title" required placeholder="e.g. Database System Concepts">
+                <label for="book-title">Title <span aria-hidden="true">*</span></label>
+                <input type="text" id="book-title" name="title" required placeholder="e.g. Database System Concepts">
             </div>
             <div class="field">
-                <label>Author *</label>
-                <input type="text" name="author" required placeholder="e.g. Henry F. Korth">
+                <label for="book-author">Author <span aria-hidden="true">*</span></label>
+                <input type="text" id="book-author" name="author" required placeholder="e.g. Henry F. Korth">
             </div>
             <div class="field">
-                <label>Category</label>
-                <input type="text" name="category" placeholder="e.g. Computer Science">
+                <label for="book-category">Category</label>
+                <input type="text" id="book-category" name="category" placeholder="e.g. Computer Science">
             </div>
             <div class="field">
-                <label>Copies *</label>
-                <input type="number" name="quantity" min="0" value="1" required>
+                <label for="book-quantity">Copies <span aria-hidden="true">*</span></label>
+                <input type="number" id="book-quantity" name="quantity" min="0" value="1" required>
             </div>
             <div class="field">
                 <button type="submit" class="btn btn-primary">Save Book</button>
             </div>
         </form>
     </div>
-</div>
+</section>
 
-<div class="card">
-    <div class="card-head">
-        <h2>Inventory ({{ books|length }})</h2>
-        <form method="GET" action="{{ url_for('books') }}" class="search-group">
-            <input type="text" name="search" value="{{ search }}" placeholder="Filter by title or author...">
+<section class="card" aria-labelledby="inventory-title">
+    <header class="card-head">
+        <h2 id="inventory-title">Inventory <span class="count-label">{{ books|length }}</span></h2>
+        <form method="GET" action="{{ url_for('books') }}" class="search-group" role="search" aria-label="Search book inventory">
+            <label class="sr-only" for="book-search">Search by title or author</label>
+            <input type="search" id="book-search" name="search" value="{{ search }}" placeholder="Filter by title or author...">
             <button type="submit" class="btn btn-secondary">Search</button>
             {% if search %}
-                <a href="{{ url_for('books') }}" class="btn btn-secondary">Clear</a>
+                <a href="{{ url_for('books') }}" class="btn btn-secondary">Clear search</a>
             {% endif %}
         </form>
-    </div>
+    </header>
 
     <div class="table-wrap">
         <table>
+            <caption class="sr-only">Library book inventory</caption>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Book Title</th>
-                    <th>Author</th>
-                    <th>Category</th>
-                    <th>Availability</th>
-                    <th>Action</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Book title</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Availability</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,17 +76,17 @@
                     </td>
                     <td>
                         <form method="POST" action="{{ url_for('delete_book', id=book.id) }}" onsubmit="return confirm('Remove this book permanently?');">
-                            <button type="submit" class="btn-xs-danger">Delete</button>
+                            <button type="submit" class="btn-xs-danger" aria-label="Delete {{ book.title }}">Delete</button>
                         </form>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 28px;">No books found matching your query.</td>
+                    <td colspan="6" class="empty-state">No books found matching your query.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}

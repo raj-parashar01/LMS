@@ -3,42 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111713">
+    <meta name="description" content="Sign in to the Library Desk administration console">
     <title>Sign In | Library Desk</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="auth-screen">
-        <div class="auth-box">
+    <a class="skip-link" href="#sign-in-form">Skip to sign in</a>
+
+    <main class="auth-screen">
+        <section class="auth-box" aria-labelledby="sign-in-title">
             <div class="auth-brand">
-                <div class="brand-icon">LBS</div>
+                <span class="brand-icon" aria-hidden="true">LBS</span>
                 <span class="brand-title">Library Desk</span>
             </div>
 
-            <h1>Sign in to workspace</h1>
-            <p>Enter your administrator credentials to continue.</p>
+            <h1 id="sign-in-title">Sign in to workspace</h1>
+            <p id="sign-in-description">Enter your administrator credentials to continue.</p>
 
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                        <div class="flash flash-{{ category }}"{% if category == 'danger' %} role="alert" aria-live="assertive"{% else %} role="status" aria-live="polite"{% endif %}>{{ message }}</div>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
 
-            <form method="POST" action="{{ url_for('login') }}">
+            <form id="sign-in-form" method="POST" action="{{ url_for('login') }}" aria-describedby="sign-in-description">
                 <div class="field">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required autofocus placeholder="admin">
+                    <input type="text" id="username" name="username" autocomplete="username" required placeholder="admin">
                 </div>
 
                 <div class="field">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                    <input type="password" id="password" name="password" autocomplete="current-password" required placeholder="Enter your password">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Sign In</button>
             </form>
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
 </html>

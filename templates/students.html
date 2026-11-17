@@ -1,53 +1,55 @@
 {% extends "base.html" %}
 {% block title %}Students | Library Desk{% endblock %}
+{% block meta_description %}Register library members and manage student contact details{% endblock %}
 {% block page_title %}Students Directory{% endblock %}
 {% block page_subtitle %}Register student members and manage contact details{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card-head">
-        <h2>Register New Student</h2>
-    </div>
+<section class="card" aria-labelledby="register-student-title">
+    <header class="card-head">
+        <h2 id="register-student-title">Register a student</h2>
+    </header>
     <div class="card-body">
-        <form method="POST" action="{{ url_for('students') }}" class="inline-form">
+        <form method="POST" action="{{ url_for('students') }}" class="inline-form" aria-label="Register student">
             <div class="field">
-                <label>Full Name *</label>
-                <input type="text" name="name" required placeholder="e.g. Rohan Deshmukh">
+                <label for="student-name">Full name <span aria-hidden="true">*</span></label>
+                <input type="text" id="student-name" name="name" autocomplete="name" required placeholder="e.g. Rohan Deshmukh">
             </div>
             <div class="field">
-                <label>Class / Course</label>
-                <input type="text" name="class_name" placeholder="e.g. BCA Final Year">
+                <label for="student-class">Class / course</label>
+                <input type="text" id="student-class" name="class_name" placeholder="e.g. BCA Final Year">
             </div>
             <div class="field">
-                <label>Mobile</label>
-                <input type="text" name="mobile" placeholder="10-digit mobile number">
+                <label for="student-mobile">Mobile</label>
+                <input type="tel" id="student-mobile" name="mobile" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile number">
             </div>
             <div class="field">
-                <label>Email</label>
-                <input type="email" name="email" placeholder="rohan@college.edu">
+                <label for="student-email">Email</label>
+                <input type="email" id="student-email" name="email" autocomplete="email" placeholder="rohan@college.edu">
             </div>
             <div class="field">
                 <button type="submit" class="btn btn-primary">Add Student</button>
             </div>
         </form>
     </div>
-</div>
+</section>
 
-<div class="card">
-    <div class="card-head">
-        <h2>Registered Students ({{ students|length }})</h2>
-    </div>
+<section class="card" aria-labelledby="students-list-title">
+    <header class="card-head">
+        <h2 id="students-list-title">Registered students <span class="count-label">{{ students|length }}</span></h2>
+    </header>
 
     <div class="table-wrap">
         <table>
+            <caption class="sr-only">Registered library students</caption>
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Student Name</th>
-                    <th>Class</th>
-                    <th>Mobile</th>
-                    <th>Email</th>
-                    <th>Action</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Student name</th>
+                    <th scope="col">Class</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,17 +62,17 @@
                     <td>{{ student.email or '—' }}</td>
                     <td>
                         <form method="POST" action="{{ url_for('delete_student', id=student.id) }}" onsubmit="return confirm('Delete this student profile?');">
-                            <button type="submit" class="btn-xs-danger">Delete</button>
+                            <button type="submit" class="btn-xs-danger" aria-label="Delete student {{ student.name }}">Delete</button>
                         </form>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 28px;">No students registered yet.</td>
+                    <td colspan="6" class="empty-state">No students registered yet.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% endblock %}
