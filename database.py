@@ -1,13 +1,11 @@
 import os
-import mysql.connector
-from dotenv import load_dotenv
+from pymongo import MongoClient
 
-load_dotenv()
+_client = None
 
 def get_db():
-    return mysql.connector.connect(
-        host=os.environ.get("DB_HOST", "localhost"),
-        user=os.environ.get("DB_USER", "root"),
-        password=os.environ.get("DB_PASSWORD", ""),
-        database=os.environ.get("DB_NAME", "library_db")
-    )
+    global _client
+    if _client is None:
+        mongo_uri = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
+        _client = MongoClient(mongo_uri)
+    return _client["lms_db"]
