@@ -113,7 +113,7 @@ python app.py
 
 ```
 
-Visit **`http://127.0.0.1:5000`** and log in with:
+Visit **`[http://127.0.0.1:5000](https://lms-kappa-lyart.vercel.app/)`** and log in with:
 
 * **Username:** `admin`
 
